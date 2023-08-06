@@ -6,7 +6,7 @@ Adaptation Courtesy: www.hobbytronics.co.uk
 
 volatile int interruptCount; // Measures flow sensor pulsesunsigned 
 
-unsigned char flowsensor = 2; // Sensor Input
+unsigned char flowsensor = 2; // Sensor Input GPIO
 unsigned long lastMeasureTime = 0;
 unsigned long lastReadTime = 0;
 const float FLOW_FACTOR = 6.6; // Example: 6.6 L/min per pulse
