@@ -29,7 +29,7 @@ float readFlowData() {
   if (Q == Q ){
     flowLitesPerSecond = Q / 60 ;
   }
-  totalFlow += flowLitesPerSecond;
+  totalFlow += flowLitesPerSecond; //this it the thing that i am really setting
   interruptCount = 0;
   lastReadTime = millis();
   return flowLitesPerSecond;
