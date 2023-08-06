@@ -13,11 +13,11 @@ const float FLOW_FACTOR = 6.6; // Example: 6.6 L/min per pulse
 float totalFlow = 0.0;
 int advertiseCount = 0;
 int advertiseCountMAX = 3600; //every hour
+String nameJSON = 'WaterFlowMain';
 
 
-void flow () // Interrupt function
-{
-   interruptCount++;
+void flow () { // Interrupt function
+  interruptCount++;
 }
 
 float readFlowData() {
@@ -25,36 +25,40 @@ float readFlowData() {
   unsigned long elapsedTime = currentTime - lastReadTime;
 //  //Q=L/MIN
   float Q = (1000 * (interruptCount / (float)elapsedTime)) / FLOW_FACTOR;
-  float flowLitesPerSecond = 0;
+  float flowLitersPerSecond = 0;
   if (Q == Q ){
-    flowLitesPerSecond = Q / 60 ;
+    flowLitersPerSecond = Q / 60 ;
   }
-  totalFlow += flowLitesPerSecond; //this it the thing that i am really setting
+  totalFlow += flowLitersPerSecond; //this it the thing that i am really setting
   interruptCount = 0;
   lastReadTime = millis();
-  return flowLitesPerSecond;
+  return flowLitersPerSecond;
 }
 
 void reportTotalFlow() {
   String str = String("{ ");
-  str += String(  "\"WaterFlowMain\" : ") + String(totalFlow);
+  str += String(  "\"" + nameJSON + "\" : ") + String(totalFlow);
   str += String(" }");
   Serial.println(str);
   // Reset the total flow
   totalFlow = 0.0;
 }
 
-void printConfig (){
+void printConfig () {
+  String device_class = 'water';
+  String name = 'Water_Flow_Main';
+  String unit_of_measurement = 'L';
+  String value_template = "{{value_json." + nameJSON + "}}";
+  
   Serial.println("CONFIGdevice_class:water,name:Water_Flow_Main,unit_of_measurement:L,value_template:{{value_json.WaterFlowMain}}");
 }
 
-   void setup()
- {
-   pinMode(flowsensor, INPUT_PULLUP);
-   Serial.begin(115200);
-   Serial.println("Starting... yf-b5 Flow Meter");
-   delay(20000);
-   printConfig ();
+   void setup() {
+  pinMode(flowsensor, INPUT_PULLUP);
+  Serial.begin(115200);
+  Serial.println("Starting... yf-b5 Flow Meter");
+  delay(20000);
+  printConfig ();
 
   // homeassistant/sensor/84f3eb23ea09/Water_Flow_Main/config
   //  {
@@ -65,10 +69,10 @@ void printConfig (){
   //  "state_topic": "homeassistant/sensor/84f3eb23ea09/state"
   //  }
 
-   attachInterrupt(digitalPinToInterrupt(flowsensor), flow, RISING); // Setup Interrupt
-   sei(); // Enable interrupts
-   lastMeasureTime = millis();
-   lastReadTime = millis();
+  attachInterrupt(digitalPinToInterrupt(flowsensor), flow, RISING); // Setup Interrupt
+  sei(); // Enable interrupts
+  lastMeasureTime = millis();
+  lastReadTime = millis();
 }
 
 int sec_counter = 0;
